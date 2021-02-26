@@ -1,0 +1,4 @@
+---
+# defaults file for memoryleak.nfs-mounts
+nfs_mounts: []
+

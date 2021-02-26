@@ -1,0 +1,40 @@
+---
+- name: Load variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - include_vars
+
+- name: Installs required packages
+  package:
+    name: "{{ nfs_mounts_packages | join(' ') }}"
+    state: present
+  tags:
+    - package
+  become: true
+
+- name: Install NFS SystemD mount unit
+  template:
+    dest: "/etc/systemd/system/{{ item.nfs_unit_name }}.mount"
+    src: "mount.j2"
+  become: true
+  with_items: "{{ nfs_mounts }}"
+
+- name: Install NFS SystemD automount unit
+  template:
+    dest: "/etc/systemd/system/{{ item.nfs_unit_name }}.automount"
+    src: "automount.j2"
+  become: true
+  with_items: "{{ nfs_mounts }}"
+
+- name: Create mount target locally
+  file:
+    path: "{{ item.nfs_mount }}"
+    state: directory
+    recurse: true
+  become: true
+  with_items: "{{ nfs_mounts }}"
+
+- name: Reload SystemD unit files
+  systemd:
+    daemon_reload: true
+  become: true

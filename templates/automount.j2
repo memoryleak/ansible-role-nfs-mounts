@@ -1,0 +1,8 @@
+[Unit]
+Description=Automount {{ item.nfs_path }} on {{ item.nfs_server }}
+
+[Automount]
+Where={{ item.nfs_mount }}
+
+[Install]
+WantedBy=multi-user.target

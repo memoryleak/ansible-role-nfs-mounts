@@ -1,0 +1,12 @@
+[Unit]
+Description=Mount {{ item.nfs_path }} on {{ item.nfs_server }}
+After=network.target
+
+[Mount]
+What={{ item.nfs_server }}:{{ item.nfs_path }}
+Where={{ item.nfs_mount }}
+Type=nfs
+Options=_netdev,auto,rw,relatime,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys
+
+[Install]
+WantedBy=multi-user.target
